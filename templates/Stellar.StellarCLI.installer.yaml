@@ -1,22 +1,22 @@
 ---
 PackageIdentifier: Stellar.StellarCLI
- PackageVersion: %{version}
- InstallerLocale: en-US
- InstallerType: inno
- Scope: machine
- Dependencies:
-   PackageDependencies:
-   - PackageIdentifier: Microsoft.VCRedist.2015+.x64
- ProductCode: Stellar CLI_is1
- ReleaseDate: %{release_date}
- AppsAndFeaturesEntries:
- - ProductCode: Stellar CLI_is1
- ElevationRequirement: elevatesSelf
- InstallationMetadata:
-   DefaultInstallLocation: '%ProgramFiles%\Stellar CLI'
- Installers:
- - Architecture: x64
-   InstallerUrl: https://github.com/stellar/stellar-cli/releases/download/v%{version}/stellar-cli-installer-%{version}-x86_64-pc-windows-msvc.exe
-   InstallerSha256: %{digest}
- ManifestType: installer
- ManifestVersion: 1.9.0
+PackageVersion: %{version}
+InstallerLocale: en-US
+InstallerType: inno
+Scope: machine
+Dependencies:
+  PackageDependencies:
+    - PackageIdentifier: Microsoft.VCRedist.2015+.x64
+ProductCode: Stellar CLI_is1
+ReleaseDate: "%{release_date}"
+AppsAndFeaturesEntries:
+  - ProductCode: Stellar CLI_is1
+ElevationRequirement: elevatesSelf
+InstallationMetadata:
+  DefaultInstallLocation: '%ProgramFiles%\Stellar CLI'
+Installers:
+  - Architecture: x64
+    InstallerUrl: https://github.com/stellar/stellar-cli/releases/download/v%{version}/stellar-cli-installer-%{version}-x86_64-pc-windows-msvc.exe
+    InstallerSha256: %{digest}
+ManifestType: installer
+ManifestVersion: 1.9.0
