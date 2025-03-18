@@ -1,0 +1,6 @@
+---
+PackageIdentifier: Stellar.StellarCLI
+PackageVersion: %{version}
+DefaultLocale: en-US
+ManifestType: version
+ManifestVersion: 1.9.0

@@ -1,0 +1,66 @@
+---
+name: prepare
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        description: "The version of the stellar-cli to publish"
+
+jobs:
+  winget:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: sync
+      - run: |
+          version=$(echo -n ${{ inputs.version }} | sed 's/v//')
+          echo VERSION=$version >> $GITHUB_ENV
+          echo RELEASE_DATE=$(date '+%Y-%m-%d') >> $GITHUB_ENV
+          echo INSTALLER_URL="https://github.com/stellar/stellar-cli/releases/download/v${version}/stellar-cli-installer-${version}-x86_64-pc-windows-msvc.exe" >> $GITHUB_ENV
+      - run: |
+          mkdir build
+          wget --quiet -O build/installer.exe ${{ env.INSTALLER_URL }}
+          echo DIGEST=$(sha256sum build/installer.exe | cut -d ' ' -f 1 | tr 'a-z' 'A-Z') >> $GITHUB_ENV
+      - run: |
+          set -e
+          echo "installer: ${{ env.INSTALLER_URL }}"
+          echo "version: ${{ env.VERSION }}"
+          echo "release date: ${{ env.RELEASE_DATE }}"
+          echo "digest: ${{ env.DIGEST }}"
+          cp templates/*.yaml build/
+          find build -name '*.yaml' -exec sed -i -e "s/%{version}/${{ env.VERSION }}/g" {} \;
+          find build -name '*.yaml' -exec sed -i -e "s/%{release_date}/${{ env.RELEASE_DATE }}/g" {} \;
+          find build -name '*.yaml' -exec sed -i -e "s/%{digest}/${{ env.DIGEST }}/g" {} \;
+          echo "Done!"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Stellar.StellarCLI.installer.yaml
+          path: build/Stellar.StellarCLI.installer.yaml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Stellar.StellarCLI.locale.en-US.yaml
+          path: build/Stellar.StellarCLI.locale.en-US.yaml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Stellar.StellarCLI.yaml
+          path: build/Stellar.StellarCLI.yaml
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          path: winget-pkgs
+          fetch-depth: 1
+      - run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          output_dir=manifests/s/Stellar/StellarCLI/${{ env.VERSION }}
+          branch_name=Stellar.StellarCLI-${{ env.VERSION }}
+          echo BRANCH_NAME=$branch_name >> $GITHUB_ENV
+          cd winget-pkgs
+          git checkout -b $branch_name
+          mkdir -p $output_dir
+          cp ../build/*.yaml $output_dir
+          git add .
+          git commit -m "Release Stellar.StellarCLI v${{ env.VERSION }}"
+          git push --force origin $branch_name
