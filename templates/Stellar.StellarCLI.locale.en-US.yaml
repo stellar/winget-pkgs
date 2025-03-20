@@ -1,4 +1,4 @@
----
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.9.0.schema.json
 PackageIdentifier: Stellar.StellarCLI
 PackageVersion: %{version}
 PackageLocale: en-US
@@ -11,6 +11,7 @@ License: Apache-2.0
 LicenseUrl: https://github.com/stellar/stellar-cli/blob/HEAD/LICENSE
 ShortDescription: CLI for Stellar developers
 Description: CLI for Stellar developers
+ReleaseNotes: See https://github.com/stellar/stellar-cli/releases/tag/v%{version}
 Tags:
   - cli
   - stellar
